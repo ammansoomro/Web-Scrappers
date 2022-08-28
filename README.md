@@ -6,4 +6,5 @@ The bot will scrape all of the Teachers:
   - Emails
   - Position
   - Profile Link
+  
 Save the images in a folder, and all the other data in .csv file.
