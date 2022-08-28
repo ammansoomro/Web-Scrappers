@@ -74,9 +74,11 @@ with open(filename + ".csv", "w", encoding='utf-8') as outputfile:
         if (len(Output) > 1):
             outputfile.write(Output)
         elif loss == 4:
+            print("Search Complete")
             exit(0)
         else:
             loss += 1
+
 
 print("Search Complete")
 # END OF PROGRAM
