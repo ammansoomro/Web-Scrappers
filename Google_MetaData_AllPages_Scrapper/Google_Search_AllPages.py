@@ -1,5 +1,4 @@
-import requests
-import urllib
+import numpy as np
 from requests_html import HTMLSession
 from requests_html import HTMLSession
 
@@ -20,6 +19,7 @@ def get_results(query, count):
 def get_source(url):
     session = HTMLSession()
     response = session.get(url)
+    print(response)
     return response
 
 
@@ -29,7 +29,6 @@ def parse_results(response, keyword):
         css_identifier_title = "h3"
         css_identifier_link = ".yuRUbf a"
         css_identifier_text = ".VwiC3b"
-
         results = response.html.find(css_identifier_result)
 
         output = ""
@@ -39,13 +38,26 @@ def parse_results(response, keyword):
             title = (result.find(css_identifier_title)
                      [0].text).strip().replace(",", "")
             link = result.find(css_identifier_link)[0].attrs['href']
-            text = result.find(css_identifier_text)[0].text
+            text = (result.find(css_identifier_text)[
+                    0].text).strip().replace(",", "")
             print("Title: " + title)
             print("Link: " + link)
             print("Text: " + text)
             print("============================================================")
-            if (title.lower().find(keyword.lower()) > -1) or (text.lower().find(keyword.lower()) > -1):
-                output = output + title + "," + link + "\n"
+            searchwords = keyword.lower().split(" ")
+            length = len(searchwords)
+            newEntry = title + "," + link + "," + text + "\n"
+
+            ################### NUMPY TESTING ################################
+            SearchingWords = keyword.lower().split(" ")
+            SearchingQuery = title + " " + link + " " + text
+            SearchingQuery = SearchingQuery.lower().replace(
+                ',', " ").replace('.', " ").replace("-", " ").split(" ")
+            SearchingWords = np.array(SearchingWords)
+            SearchingQuery = np.array(SearchingQuery)
+            output = output + newEntry
+            ################### NUMPY TESTING ################################
+
     except Exception as e:
         print("Searcing...")
 
@@ -53,21 +65,20 @@ def parse_results(response, keyword):
 
 
 # OPENING AND WRITING IN FILE
-filename = "Output"
+filename = input("Enter Output filename:")
 with open(filename + ".csv", "w", encoding='utf-8') as outputfile:
-    outputfile.write("Title,Link\n")
+    outputfile.write("Title,Link,Text\n")
     Keyword = input("Enter Keyword: ")
     count = 0
-    while count < 250:
+    while count < 300:
         Output = google_search(Keyword, count)
         count += 10
-        print(" ")
         if (len(Output) > 1):
             outputfile.write(Output)
-        elif loss == 500:
+        elif loss == 4:
+            print("Search Complete")
             exit(0)
         else:
-            print(loss)
             loss += 1
 
 

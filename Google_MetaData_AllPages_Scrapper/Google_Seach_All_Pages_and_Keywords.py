@@ -1,5 +1,4 @@
-import requests
-import urllib
+import numpy as np
 from requests_html import HTMLSession
 from requests_html import HTMLSession
 
@@ -29,7 +28,6 @@ def parse_results(response, keyword):
         css_identifier_title = "h3"
         css_identifier_link = ".yuRUbf a"
         css_identifier_text = ".VwiC3b"
-
         results = response.html.find(css_identifier_result)
 
         output = ""
@@ -47,13 +45,18 @@ def parse_results(response, keyword):
             print("============================================================")
             searchwords = keyword.lower().split(" ")
             length = len(searchwords)
-            print(searchwords)
-            for key in searchwords:
-                if key in text.lower():
-                    length -= 1
+            newEntry = title + "," + link + "," + text + "\n"
 
-            if (length == 0):
-                output = output + title + "," + link + "," + text + "\n"
+            ################### NUMPY TESTING ################################
+            SearchingWords = keyword.lower().split(" ")
+            SearchingQuery = title + " " + link + " " + text
+            SearchingQuery = SearchingQuery.lower().replace(
+                ',', " ").replace('.', " ").replace("-", " ").split(" ")
+            SearchingWords = np.array(SearchingWords)
+            SearchingQuery = np.array(SearchingQuery)
+            if (np.intersect1d(SearchingWords, SearchingQuery).size == SearchingWords.size):
+                output = output + newEntry
+            ################### NUMPY TESTING ################################
 
     except Exception as e:
         print("Searcing...")
@@ -62,7 +65,7 @@ def parse_results(response, keyword):
 
 
 # OPENING AND WRITING IN FILE
-filename = "Test"
+filename = input("Enter Output filename:")
 with open(filename + ".csv", "w", encoding='utf-8') as outputfile:
     outputfile.write("Title,Link,Text\n")
     Keyword = input("Enter Keyword: ")
@@ -70,7 +73,6 @@ with open(filename + ".csv", "w", encoding='utf-8') as outputfile:
     while count < 250:
         Output = google_search(Keyword, count)
         count += 10
-        print(" ")
         if (len(Output) > 1):
             outputfile.write(Output)
         elif loss == 4:
