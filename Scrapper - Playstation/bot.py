@@ -85,7 +85,6 @@ if __name__ == '__main__':
     path = os.getcwd()
     path = os.path.join(path, Keyword)
     os.mkdir(path)
-    print(path)
     with open(Keyword + "/" + Keyword + ".csv", "w") as outputfile:
         outputfile.write("Index,Title,Price,Link\n")    
         for item in items:
