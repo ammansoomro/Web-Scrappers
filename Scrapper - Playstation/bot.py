@@ -47,13 +47,13 @@ def get_price(item, count):
 # ====================================== Image ======================================
 
 
-def get_Image(item,count,keyword):
+def get_Image(item, count, keyword):
     try:
         itemNo = "search#productTile"+str(count)+"#game-art#image"
         image = item.find("span", attrs={'data-qa': itemNo})
         image = image.contents[1].contents[0].attrs['src']
         image = requests.get(image).content
-        with open(keyword + "/"+ str(count) + '.png', 'wb') as handler:
+        with open(keyword + "/" + str(count) + '.png', 'wb') as handler:
             handler.write(image)
     except AttributeError:
         image = ""
@@ -82,11 +82,13 @@ if __name__ == '__main__':
     results = soup.find('ul', class_='psw-grid-list psw-l-grid')
     items = results.find_all('li')
     count = 0
+    pages = soup.find(
+        'ol', class_='psw-l-space-x-1 psw-l-line-center psw-list-style-none')
     path = os.getcwd()
     path = os.path.join(path, Keyword)
     os.mkdir(path)
     with open(Keyword + "/" + Keyword + ".csv", "w") as outputfile:
-        outputfile.write("Index,Title,Price,Link\n")    
+        outputfile.write("Index,Title,Price,Link\n")
         for item in items:
             product_type = get_ProductType(item, count)
             if (product_type):
@@ -96,12 +98,13 @@ if __name__ == '__main__':
                 price = get_price(item, count)
                 link = get_link(item, count)
                 # platform = get_platform(item, count)
-                get_Image(item,count,Keyword)
+                get_Image(item, count, Keyword)
                 print("Count: " + str(count))
                 print("Title: " + title)
                 print("Price: " + price)
                 print("Link: " + link)
                 print("=====================================")
                 row = str(count)
-                outputfile.write(row + "," + title + "," + price + "," + link + "\n")
+                outputfile.write(row + "," + title + "," +
+                                 price + "," + link + "\n")
             count = count + 1
