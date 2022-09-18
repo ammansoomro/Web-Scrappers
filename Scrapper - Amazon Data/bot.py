@@ -17,12 +17,6 @@ def get_title(soup):
         # Title as a string value
         title_string = title_value.strip()
 
-        # # Printing types of values for efficient understanding
-        # print(type(title))
-        # print(type(title_value))
-        # print(type(title_string))
-        # print()
-
     except AttributeError:
         title_string = ""
 
@@ -76,9 +70,13 @@ def get_review_count(soup):
 # Function to extract Availability Status
 
 
-def get_Image(soup):
+def get_Image(soup, name):
     try:
         image = soup.find("img", attrs={'class': 's-image'}).attrs['src']
+        print("Downloading Image....")
+        image = requests.get(image).content
+        with open('Product_Images/' + name + '.jpg', 'wb') as handler:
+            handler.write(image)
     except AttributeError:
         image = ""
 
@@ -99,6 +97,7 @@ if __name__ == '__main__':
     # HTTP Request
     webpage = requests.get(URL, headers=HEADERS)
     # Soup Object containing all data
+    print(webpage.status_code)
     soup = BeautifulSoup(webpage.content, 'html.parser')
     results = soup.find_all('div', attrs={'class': 'sg-row'})
     for result in results:
@@ -107,7 +106,7 @@ if __name__ == '__main__':
         price = get_price(result)
         rating = get_rating(result)
         review_count = get_review_count(result)
-        Image = get_Image(result)
+        Image = get_Image(result, title)
 
         if (title != ""):
             # Printing the data
@@ -115,5 +114,4 @@ if __name__ == '__main__':
             print('Product Price =', price)
             print('Product Rating =', rating)
             print('Number of Reviews =', review_count)
-            print('Image =', Image)
             print()

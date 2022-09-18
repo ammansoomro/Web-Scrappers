@@ -23,7 +23,7 @@ def scrap_for_data(x):
             Email = str(TeacherEmail.getText())
             Position = str(TeacherName.getText())
             Profile = str(TeacherName.get("href"))
-
+    
             # Writing: Teacher Name, Teacher Email, Teacher Position and Teacher Profile to an array of output
             output = output + Name + "," + Email + "," + Position + "," + Profile + "\n"
             print(Name)
